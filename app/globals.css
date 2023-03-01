@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css?family=Roboto+Mono:400,500");
+@import url('https://fonts.googleapis.com/css?family=Roboto+Mono:400,500');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@800;900&display=swap');
 
 :root {
@@ -42,16 +42,14 @@
 }
 
 li {
-  color: white
+  color: white;
 }
-
 
 * {
   box-sizing: border-box;
   padding: 0;
   margin: 0;
-  font-family: "Roboto Mono", Helvetica, sans-serif;
-
+  font-family: 'Roboto Mono', Helvetica, sans-serif;
 }
 
 p {
@@ -74,7 +72,7 @@ body {
   margin-bottom: -50px;
 }
 
-.footer{
+.footer {
   height: 50px;
   display: flex;
   justify-content: center;
@@ -121,19 +119,17 @@ input {
   color: #230041;
   font-weight: bold;
   border-radius: 50px;
-  transition: all .35s;
+  transition: all 0.35s;
   font-size: 18px;
 }
 
-.input-button:disabled
-{
+.input-button:disabled {
   background-color: grey;
 }
-.input-button:disabled:hover{
+.input-button:disabled:hover {
   background-color: grey;
-  
-  cursor: not-allowed;
 
+  cursor: not-allowed;
 }
 .app-container {
   padding: 20px;
@@ -147,13 +143,13 @@ input {
 .results-container {
   width: 800px;
   padding-top: 55px;
-  margin:0 auto;
+  margin: 0 auto;
 }
 
 .input-button:hover {
   background-color: #a955f1;
 }
-input{
+input {
   padding: 10px 14px;
   margin-bottom: 4px;
   outline: none;
@@ -164,9 +160,10 @@ input{
 .react-datepicker__day--selected {
   background-color: #c683ff !important;
 }
-.react-datepicker__day--keyboard-selected{
+.react-datepicker__day--keyboard-selected {
   background-color: #e1beff !important;
 }
+
 @media screen and (max-width: 500px) {
   .form-container {
     width: 100%;

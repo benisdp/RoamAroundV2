@@ -1,42 +1,53 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from 'next'
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 type Data = {
-  pointsOfInterest: any,
-}
+  pointsOfInterest?: any;
+  message?: string;
+};
 
-const GPT_KEY = process.env.GPT_API_KEY
+const GPT_KEY = process.env.GPT_API_KEY;
 
 const headers = {
   'Content-Type': 'application/json',
-  'Authorization': `Bearer ${GPT_KEY}`
-}
+  Authorization: `Bearer ${GPT_KEY}`,
+};
 
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  
-  const { pointsOfInterestPrompt } = JSON.parse(req.body)
-  const response2 = await fetch('https://api.openai.com/v1/completions', {
-    method: 'POST',
-    headers,
-    body: JSON.stringify({
-      model: 'text-davinci-003',
-      prompt: pointsOfInterestPrompt,
-      temperature: 0,
-      max_tokens: 300
-    })
-  })
+  const { pointsOfInterestPrompt, block } = JSON.parse(req.body);
 
-  let pointsOfInterest = await response2.json()
+  try {
+    if (!block) {
+      const response2 = await fetch('https://api.openai.com/v1/completions', {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          model: 'text-davinci-003',
+          prompt: pointsOfInterestPrompt,
+          temperature: 0,
+          max_tokens: 300,
+        }),
+      });
 
-  pointsOfInterest = pointsOfInterest.choices[0].text.split('\n')
-  pointsOfInterest = pointsOfInterest[pointsOfInterest.length - 1]
-  pointsOfInterest = pointsOfInterest.split(',')
-  const pointsOfInterestArray = pointsOfInterest.map(i => i.trim())
+      let pointsOfInterest = await response2.json();
 
-  res.status(200).json({
-    pointsOfInterest: JSON.stringify(pointsOfInterestArray)
-  })
+      pointsOfInterest = pointsOfInterest.choices[0].text.split('\n');
+      pointsOfInterest = pointsOfInterest[pointsOfInterest.length - 1];
+      pointsOfInterest = pointsOfInterest.split(',');
+      const pointsOfInterestArray = pointsOfInterest.map((i) => i.trim());
+
+      res.status(200).json({
+        pointsOfInterest: JSON.stringify(pointsOfInterestArray),
+      });
+    } else {
+      res.status(404).json({
+        message: 'failure',
+      });
+    }
+  } catch (err) {
+    console.log(err);
+  }
 }
