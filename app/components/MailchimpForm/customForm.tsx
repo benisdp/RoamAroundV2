@@ -84,7 +84,7 @@ const styles = {
     display: 'flex',
     flexDirection: 'column' as 'column',
     margin: '20px auto 0px',
-    padding: '20px',
+    padding: '5px',
     boxShadow: '0px 0px 12px rgba(198, 131, 255, .2)',
     borderRadius: '10px',
   },
