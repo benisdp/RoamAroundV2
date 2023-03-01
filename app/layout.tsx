@@ -21,7 +21,7 @@ export default function RootLayout({
         </div>
         <footer className="footer">
             <p>
-            <a className="sponsor" target="_blank" rel="no-opener" href="https://www.tkqlhce.com/click-100799250-10695128"> We've hit our limits. Until we're back, enjoy round trip flights < $150! 🫡</a>
+            <a className="sponsor" target="_blank" rel="no-opener" href="https://www.tkqlhce.com/click-100799250-10695128"> We've hit our limits. Until we're back, here are flights below $150! 🫡</a>
             </p>
         </footer>
       </body>
