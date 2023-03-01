@@ -38,7 +38,7 @@ export const CustomForm = ({ status, message, onValidated }) => {
       <h5 className="mc__title">
         {status === 'success'
           ? 'Success!'
-          : 'Subscribe for exclusive RoamAround deals on this itinerary:'}
+          : 'Subscribe for exclusive RoamAround deals:'}
       </h5>
       <div style={styles.formContainer} className="form-container">
         {status === 'sending' && <div className="sending">sending...</div>}
