@@ -1,0 +1,24 @@
+.mc__title {
+  max-width: 235px;
+  text-align: center;
+  color: #c683ff;
+  margin: 25px auto 35px;
+}
+.mc__field-container {
+  display: flex;
+}
+.sending {
+  color: green;
+}
+.success-message {
+  color: green;
+}
+.error-message {
+  color: red;
+}
+.submitBtn {
+  margin-left: 10px;
+}
+.mc__form-container {
+  margin-top: 20px;
+}
