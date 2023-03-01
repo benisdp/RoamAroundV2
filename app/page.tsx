@@ -8,6 +8,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import MailchimpFormContainer from './components/MailchimpForm/MailChimpFormContainer';
 import { AFFILIATE_URL } from '@/constants';
+import Script from 'next/script';
 
 
 export default function Home() {
@@ -27,13 +28,13 @@ export default function Home() {
   useEffect(() => {
     checkRedirect();
   }, []);
+
   const getIP = async () => {
     const response = await fetch('http://ip-api.com/json/');
     const data = await response.json();
     setBlockCountry(data.countryCode);
   };
   const isUserConnectedFromIndia = () => {
-    console.log("blockCountry", blockCountry);
     return blockCountry.toLowerCase() == "in";
   };
 
@@ -85,6 +86,9 @@ export default function Home() {
   }
 
   async function hitAPI() {
+
+    gtag('event', 'itinerary_btn_clk', { 'city': request.city, 'number_of_days': request.daysNum });
+
     const isDateValid = (date: Date) => {
       return date.getTime() === date.getTime();
     };
@@ -182,6 +186,19 @@ export default function Home() {
   return (
     <main>
       <div className="app-container">
+      <Script
+        src="https://www.googletagmanager.com/gtag/js?id=G-FN5ZTL4VE8"
+        strategy="afterInteractive"
+      />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){window.dataLayer.push(arguments);}
+          gtag('js', new Date());
+
+          gtag('config', 'G-FN5ZTL4VE8');
+        `}
+      </Script>
         <h1 style={styles.header} className="hero-header">
           Roam Around
         </h1>

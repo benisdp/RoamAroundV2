@@ -5,6 +5,7 @@ export const CustomForm = ({ status, message, onValidated }) => {
   const [emailError, setEmailError] = useState<boolean>(true);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    gtag('event', 'email_submit_clk', { 'email': email });
     e.preventDefault();
     email &&
       email.indexOf('@') > -1 &&
