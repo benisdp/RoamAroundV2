@@ -35,11 +35,11 @@ export const CustomForm = ({ status, message, onValidated }) => {
       className="mc__form"
       onSubmit={(e: React.FormEvent<HTMLFormElement>) => handleSubmit(e)}
     >
-      <h4 className="mc__title">
+      <h5 className="mc__title">
         {status === 'success'
           ? 'Success!'
           : 'Subscribe for exclusive RoamAround deals on this itinerary:'}
-      </h4>
+      </h5>
       <div style={styles.formContainer} className="form-container">
         {status === 'sending' && <div className="sending">sending...</div>}
         {status === 'error' && (
