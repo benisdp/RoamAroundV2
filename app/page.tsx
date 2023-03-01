@@ -159,7 +159,7 @@ export default function Home() {
             }} 
           />
           {error.daysNum && <p style={styles.daysError}>At the moment we can only build itineraries for trips 10 days or less</p>}
-          <button className='input-button' disabled={disableButton}  onClick={hitAPI}>Build Itinerary</button>
+          {/*<button className='input-button' disabled={disableButton}  onClick={hitAPI}>Build Itinerary</button>*/}
         </div>
         <div className="results-container">
         {
