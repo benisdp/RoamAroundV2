@@ -4,9 +4,13 @@ import React, { useState, useEffect, useReducer } from 'react'
 import ReactMarkdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 import { data } from '../city-data'
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css"
 
 export default function Home() {
-  const [request, setRequest] = useState<{days?: string, city?: string}>({})
+  const [request, setRequest] = useState<{startDate?: string, daysNum?: number, city?: string}>({})
+  const [disableButton, setDisableButton] = useState<boolean>(true)
+  const [error, setError] = useState<{daysNum:boolean}>({daysNum:false})
   let [itinerary, setItinerary] = useState<string>('')
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
@@ -15,6 +19,37 @@ export default function Home() {
     checkRedirect()
   }, [])
 
+
+  useEffect(()=>{
+    if(request.daysNum && request.daysNum>10)
+    {
+      setError(error => ({
+        ...error, daysNum: true
+      }))
+    }
+    else {
+      setError(error => ({
+        ...error, daysNum: false
+      }))
+    }
+
+    if(
+      request.city 
+      && request.daysNum 
+      && request.startDate 
+      && request.daysNum <= 10
+    )
+    {
+      setDisableButton(false)
+    }
+    if(request.city == "" || request.daysNum == 0 || request.startDate == "" || (request.daysNum && request.daysNum > 10))
+    {
+      setDisableButton(true)
+    }
+
+  },[request])
+
+
   function checkRedirect() {
     if (window.location.hostname === 'gpt-travel-advisor.vercel.app') {
       window.location.replace('https://www.roamaround.io/')
@@ -22,10 +57,15 @@ export default function Home() {
   }
 
   async function hitAPI() {
+
+    const isDateValid = (date: Date) => {
+      return date.getTime() === date.getTime()
+    }
     try {
-      if (!request.city || !request.days) return
-      //setMessage('Hi! We hit out GPT limits at the moment. Please come back tomorrow!')
+      if (!request.city || !request.startDate || !isDateValid(new Date(request.startDate))  || !request.daysNum) return
+      //setMessage('Hi! We hit our limits at the moment. Please come back tomorrow!')
       setMessage('Building itinerary...this may take 40 seconds')
+      setDisableButton(true)
       setLoading(true)
       setItinerary('')
 
@@ -33,21 +73,20 @@ export default function Home() {
         if (!loading) return
         setMessage('Getting closer ...')
       }, 2000)
-
       setTimeout(() => {
         if (!loading) return
         setMessage('Almost there ...')
       }, 15000)
-
       const response = await fetch('/api/get-itinerary', {
         method: 'POST',
         body: JSON.stringify({
-          days: request.days,
-          city: request.city
+          days:request.daysNum,
+          city: request.city,
+          startDate:request.startDate,
         })
       })
       const json = await response.json()
-      
+
       const response2 = await fetch('/api/get-points-of-interest', {
         method: 'POST',
         body: JSON.stringify({
@@ -64,13 +103,14 @@ export default function Home() {
       })
 
       setItinerary(itinerary)
+      setDisableButton(false)
       setLoading(false)
     } catch (err) {
       console.log('error: ', err)
       setMessage('')
     }
   }
-  
+
   let days = itinerary.split('Day')
 
   if (days.length > 1) {
@@ -86,13 +126,40 @@ export default function Home() {
         <div style={styles.formContainer} className="form-container">
           <input style={styles.input}  placeholder="City" onChange={e => setRequest(request => ({
             ...request, city: e.target.value
-          }))} />
-          <input style={styles.input} placeholder="Days" onChange={e => setRequest(request => ({
-            ...request, days: e.target.value
-          }))} />
-          {/*{<button className="input-button"  onClick={hitAPI}>Build Itinerary</button>
-          }*/}
+            }))} 
+          />
 
+          <DatePicker placeholderText={"Start Date"} minDate={new Date()}  selected={request.startDate} onChange={(date) => {
+            setRequest(request => ({
+              ...request, startDate: date
+            }))}} 
+          />
+          <input 
+            type="number" 
+            min="1" 
+            max="10" 
+            onKeyDown={(e) => {
+              if(e.key == "-" || (e.key == "0" && !request.daysNum)) {
+               e.preventDefault();
+              }
+            }}
+            style={styles.input}  
+            placeholder="# of Days" 
+            onChange={e => {
+              if(Number.parseInt(e.target.value) <= 0) {
+                e.preventDefault();
+                setRequest(request => ({
+                  ...request, daysNum: undefined
+                }));
+                return;
+              } 
+              setRequest(request => ({
+              ...request, daysNum: Number(e.target.value)
+            }))
+            }} 
+          />
+          {error.daysNum && <p style={styles.daysError}>At the moment we can only build itineraries for trips 10 days or less</p>}
+          <button className='input-button' disabled={disableButton}  onClick={hitAPI}>Build Itinerary</button>
         </div>
         <div className="results-container">
         {
@@ -102,7 +169,7 @@ export default function Home() {
         }
         {
           itinerary && (
-            <h3 style={styles.cityHeadingStyle}>Ok, I've made your itinerary for {checkCity(request.city)}</h3>
+            <h3 style={styles.cityHeadingStyle}>Ok, we've made your itinerary for {checkCity(request.city)}</h3>
           )
         }
         {
@@ -124,14 +191,18 @@ export default function Home() {
             </div>
           ))
           }
-      
-        
+          {/*{
+            itinerary && (
+              <h3 style={styles.cityHeadingStyle}> Ready to take the next step? Support us by booking <a target="_blank" rel="no-opener" href="https://bit.ly/roamaroundfoot">here</a></h3>
+            )
+          }*/}
+
         </div>
       </div>
     </main>
   )
 }
- 
+
 function checkCity(city?: string) {
   if (!city) return
   const cityToLowerCase = city.toLowerCase()
@@ -162,6 +233,11 @@ const styles = {
     fontWeight: '900',
     fontFamily: 'Poppins',
     fontSize: '68px'
+  },
+  daysError: {
+    color: "red",
+    fontSize: "11px",
+    margin: "5px 0"
   },
   input: {
     padding: '10px 14px',
