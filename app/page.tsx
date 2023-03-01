@@ -90,8 +90,8 @@ export default function Home() {
           <input style={styles.input} placeholder="Days" onChange={e => setRequest(request => ({
             ...request, days: e.target.value
           }))} />
-          {<button className="input-button"  onClick={hitAPI}>Build Itinerary</button>
-          }
+          {/*{<button className="input-button"  onClick={hitAPI}>Build Itinerary</button>
+          }*/}
 
         </div>
         <div className="results-container">
