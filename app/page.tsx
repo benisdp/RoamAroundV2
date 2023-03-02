@@ -1,14 +1,13 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect, useReducer, useRef } from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import { data } from '../city-data';
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-import MailchimpFormContainer from './components/MailchimpForm/MailChimpFormContainer';
-import { AFFILIATE_URL } from '@/constants';
-
+import React, { useState, useEffect, useReducer, useRef } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { data } from "../city-data";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import MailchimpFormContainer from "./components/MailchimpForm/MailChimpFormContainer";
+import { AFFILIATE_URL } from "@/constants";
 
 export default function Home() {
   const [request, setRequest] = useState<{
@@ -18,17 +17,17 @@ export default function Home() {
   }>({});
   const [disableButton, setDisableButton] = useState<boolean>(true);
   const [error, setError] = useState<{ daysNum: boolean }>({ daysNum: false });
-  let [itinerary, setItinerary] = useState<string>('');
+  let [itinerary, setItinerary] = useState<string>("");
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
-  const [blockCountry, setBlockCountry] = useState<string>('');
-  const currentCity = useRef<string>('');
+  const [message, setMessage] = useState("");
+  const [blockCountry, setBlockCountry] = useState<string>("");
+  const currentCity = useRef<string>("");
 
   useEffect(() => {
     checkRedirect();
   }, []);
   const getIP = async () => {
-    const response = await fetch('http://ip-api.com/json/');
+    const response = await fetch("http://ip-api.com/json/");
     const data = await response.json();
     setBlockCountry(data.countryCode);
   };
@@ -67,9 +66,9 @@ export default function Home() {
       }
     }
     if (
-      request.city == '' ||
+      request.city == "" ||
       request.daysNum == 0 ||
-      request.startDate == '' ||
+      request.startDate == "" ||
       (request.daysNum && request.daysNum > 10) ||
       isUserConnectedFromIndia() ||
       currentCity.current === request.city
@@ -79,8 +78,8 @@ export default function Home() {
   }, [request, currentCity.current]);
 
   function checkRedirect() {
-    if (window.location.hostname === 'gpt-travel-advisor.vercel.app') {
-      window.location.replace('https://www.roamaround.io/');
+    if (window.location.hostname === "gpt-travel-advisor.vercel.app") {
+      window.location.replace("https://www.roamaround.io/");
     }
   }
 
@@ -96,28 +95,26 @@ export default function Home() {
         !request.daysNum
       )
         return;
-      
-        window.open(
-         AFFILIATE_URL
-        );
+
+      window.open(AFFILIATE_URL);
 
       //setMessage('Hi! We hit our limits at the moment. Please come back tomorrow!')
       currentCity.current = request.city;
-      setMessage('Building itinerary...this may take 40 seconds');
+      setMessage("Building itinerary...this may take 40 seconds");
       setDisableButton(true);
       setLoading(true);
-      setItinerary('');
+      setItinerary("");
 
       setTimeout(() => {
         if (!loading) return;
-        setMessage('Getting closer ...');
+        setMessage("Getting closer ...");
       }, 2000);
       setTimeout(() => {
         if (!loading) return;
-        setMessage('Almost there ...');
+        setMessage("Almost there ...");
       }, 15000);
-      const response = await fetch('/api/get-itinerary', {
-        method: 'POST',
+      const response = await fetch("/api/get-itinerary", {
+        method: "POST",
         body: JSON.stringify({
           days: request.daysNum,
           city: request.city,
@@ -127,8 +124,8 @@ export default function Home() {
       });
       const json = await response.json();
 
-      const response2 = await fetch('/api/get-points-of-interest', {
-        method: 'POST',
+      const response2 = await fetch("/api/get-points-of-interest", {
+        method: "POST",
         body: JSON.stringify({
           pointsOfInterestPrompt: json.pointsOfInterestPrompt,
           block: isUserConnectedFromIndia(),
@@ -143,7 +140,7 @@ export default function Home() {
         itinerary = itinerary.replace(
           point,
           `[${point}](https://www.viator.com/searchResults/all?pid=P00089289&mcid=42383&medium=link&text=${encodeURIComponent(
-            point + ' ' + request.city
+            point + " " + request.city
           )})`
         );
       });
@@ -156,27 +153,27 @@ export default function Home() {
       }
       setLoading(false);
     } catch (err) {
-      console.log('error: ', err);
+      console.log("error: ", err);
       if (currentCity.current === request.city) {
         setDisableButton(true);
       } else {
         setDisableButton(false);
       }
       setLoading(true);
-      setMessage('Can not build itinerary ');
+      setMessage("Can not build itinerary ");
       setTimeout(() => {
         setLoading(false);
-        setMessage(' ');
+        setMessage(" ");
       }, 5000);
     }
   }
 
-  let days = itinerary.split('Day');
+  let days = itinerary.split("Day");
 
   if (days.length > 1) {
     days.shift();
   } else {
-    days[0] = '1' + days[0];
+    days[0] = "1" + days[0];
   }
 
   return (
@@ -198,7 +195,7 @@ export default function Home() {
           />
           <div>
             <DatePicker
-              placeholderText={'Start Date'}
+              placeholderText={"Start Date"}
               minDate={new Date()}
               selected={request.startDate}
               onChange={(date) => {
@@ -215,7 +212,7 @@ export default function Home() {
             min="1"
             max="10"
             onKeyDown={(e) => {
-              if (e.key == '-' || (e.key == '0' && !request.daysNum)) {
+              if (e.key == "-" || (e.key == "0" && !request.daysNum)) {
                 e.preventDefault();
               }
             }}
@@ -259,7 +256,7 @@ export default function Home() {
           )}
           {itinerary &&
             days.map((day, index) => (
-              <div style={{ marginBottom: '30px' }} key={index}>
+              <div style={{ marginBottom: "30px" }} key={index}>
                 <ReactMarkdown
                   remarkPlugins={[remarkGfm]}
                   components={{
@@ -307,39 +304,39 @@ function checkCity(city?: string) {
 
 const styles = {
   cityHeadingStyle: {
-    color: 'white',
-    marginBottom: '20px',
+    color: "white",
+    marginBottom: "20px",
   },
   header: {
-    textAlign: 'center' as 'center',
-    marginTop: '60px',
-    color: '#c683ff',
-    fontWeight: '900',
-    fontFamily: 'Poppins',
-    fontSize: '68px',
+    textAlign: "center" as "center",
+    marginTop: "60px",
+    color: "#c683ff",
+    fontWeight: "900",
+    fontFamily: "Poppins",
+    fontSize: "68px",
   },
   daysError: {
-    color: 'red',
-    fontSize: '11px',
-    margin: '5px 0',
+    color: "red",
+    fontSize: "11px",
+    margin: "5px 0",
   },
   input: {
-    padding: '10px 14px',
-    marginBottom: '4px',
-    outline: 'none',
-    fontSize: '16px',
-    width: '100%',
-    borderRadius: '8px',
+    padding: "10px 14px",
+    marginBottom: "4px",
+    outline: "none",
+    fontSize: "16px",
+    width: "100%",
+    borderRadius: "8px",
   },
   formContainer: {
-    display: 'flex',
-    flexDirection: 'column' as 'column',
-    margin: '20px auto 0px',
-    padding: '20px',
-    boxShadow: '0px 0px 12px rgba(198, 131, 255, .2)',
-    borderRadius: '10px',
+    display: "flex",
+    flexDirection: "column" as "column",
+    margin: "20px auto 0px",
+    padding: "20px",
+    boxShadow: "0px 0px 12px rgba(198, 131, 255, .2)",
+    borderRadius: "10px",
   },
   result: {
-    color: 'white',
+    color: "white",
   },
 };
