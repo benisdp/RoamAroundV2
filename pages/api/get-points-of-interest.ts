@@ -1,43 +1,41 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import type { NextApiRequest, NextApiResponse } from 'next';
+import type { NextApiRequest, NextApiResponse } from 'next'
 
 type Data = {
-  pointsOfInterest?: any;
-  message?: string;
-};
+  pointsOfInterest?: any
+  message?: string
+}
 
-const GPT_KEY = process.env.GPT_API_KEY;
+const GPT_KEY = process.env.GPT_API_KEY
 
 const headers = {
   'Content-Type': 'application/json',
   Authorization: `Bearer ${GPT_KEY}`,
-};
+}
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<Data>
-) {
-
+export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
   const { pointsOfInterestPrompt } = JSON.parse(req.body)
-  const response2 = await fetch('https://api.openai.com/v1/completions', {
+  const response2 = await fetch('https://api.openai.com/v1/chat/completions', {
     method: 'POST',
     headers,
     body: JSON.stringify({
-      model: 'text-davinci-003',
-      prompt: pointsOfInterestPrompt,
+      model: 'gpt-3.5-turbo',
+      messages: [{ role: 'user', content: pointsOfInterestPrompt }],
       temperature: 0,
-      max_tokens: 300
-    })
+      max_tokens: 300,
+    }),
   })
 
   let pointsOfInterest = await response2.json()
+  console.log('RESULT 2:', pointsOfInterest.choices[0].message.content)
 
-  pointsOfInterest = pointsOfInterest.choices[0].text.split('\n')
+  pointsOfInterest = pointsOfInterest.choices[0].message.content.split('\n')
   pointsOfInterest = pointsOfInterest[pointsOfInterest.length - 1]
   pointsOfInterest = pointsOfInterest.split(',')
-  const pointsOfInterestArray = pointsOfInterest.map(i => i.trim())
+  const pointsOfInterestArray = pointsOfInterest.map((i) => i.trim())
+  console.log('RESULT 3:', pointsOfInterestArray)
 
   res.status(200).json({
-    pointsOfInterest: JSON.stringify(pointsOfInterestArray)
+    pointsOfInterest: JSON.stringify(pointsOfInterestArray),
   })
 }
