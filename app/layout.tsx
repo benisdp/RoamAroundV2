@@ -21,7 +21,7 @@ export default function RootLayout({
         </div>
         <footer className="footer">
             <p>
-            <a className="sponsor" target="_blank" rel="no-opener" href="https://bit.ly/cjcxoxo"> Your friendly AI travel planner 🫡</a>
+            <a className="sponsor" target="_blank" rel="no-opener" href="https://bit.ly/roamtripnotes"> Like AI planners? Check out Trip Notes 🫡</a>
             </p>
         </footer>
       </body>
