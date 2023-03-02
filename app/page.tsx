@@ -160,7 +160,7 @@ export default function Home() {
         console.log(productsArray);
 
         //ON PAGE, need to compare each product(attraction) in products array, to the name of the point (point of interest) and return the PRODUCT URL (attached to product object) that has a PARTIAL match.
-        // OTHERWISE return the search result.
+        // OTHERWISE return the search result.s
 
         // function matches(text, point) {
         //   return text.toLowerCase().indexOf(point.toLowerCase()) > -1;
