@@ -157,29 +157,33 @@ export default function Home() {
 
       const productsArray = itineraryJSON.products.products;
 
+      const productTitlesArray = productsArray.map((product) => {
+        return product.title.toLowerCase();
+      });
+
+      console.log("does this work??");
+      console.log(productTitlesArray.includes("statue of liberty"));
+
+      console.log({ productTitlesArray });
+
       await pointsOfInterest.map((point) => {
         const lowercasePoint = point.toLowerCase();
         console.log(lowercasePoint);
         console.log("inside points of array map");
-        console.log({ productsArray });
-
-        //ON PAGE, need to compare each product(attraction) in products array, to the name of the point (point of interest) and return the PRODUCT URL (attached to product object) that has a PARTIAL match.
-        // OTHERWISE return the search result.s
 
         const foundProduct = productsArray.find(
           (product) =>
-            product.title.toLowerCase() ||
-            product.description.toLowerCase() === lowercasePoint
+            product.title.toLowerCase().includes(lowercasePoint) ||
+            product.description.toLowerCase().includes(lowercasePoint)
         );
 
         if (foundProduct) {
-          console.log(point, foundProduct.productUrl);
+          console.log(point, foundProduct);
           itinerary = itinerary.replace(
             point,
             `[${point}](${foundProduct.productUrl})`
           );
-          // console.log(productsArray);
-          // console.log("found a match!");
+          console.log("product found");
         } else {
           itinerary = itinerary.replace(
             point,
@@ -187,7 +191,7 @@ export default function Home() {
               point + " " + request.city
             )})`
           );
-          console.log("make a search url"); 
+          console.log("make a search url");
         }
       });
 
