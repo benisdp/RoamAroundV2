@@ -36,8 +36,17 @@ export default function Home() {
     return blockCountry.toLowerCase() == "in";
   };
 
+  // useEffect(() => {
+  //   getIP();
+  // }, []);
+
   useEffect(() => {
-    getIP();
+    const getIP = async () => {
+      const response = await fetch("http://ip-api.com/json/");
+      const data = await response.json();
+      setBlockCountry(data.countryCode);
+    };
+    getIP().catch(console.error);
   }, []);
 
   useEffect(() => {
@@ -113,7 +122,8 @@ export default function Home() {
         if (!loading) return;
         setMessage("Almost there ...");
       }, 15000);
-      const response = await fetch("/api/get-itinerary", {
+
+      const getItinerary = await fetch("/api/get-itinerary", {
         method: "POST",
         body: JSON.stringify({
           days: request.daysNum,
@@ -122,21 +132,48 @@ export default function Home() {
           block: isUserConnectedFromIndia(),
         }),
       });
-      const json = await response.json();
 
-      const response2 = await fetch("/api/get-points-of-interest", {
+      console.log({ getItinerary });
+
+      const itineraryJSON = await getItinerary.json();
+
+      console.log({ itineraryJSON });
+
+      const getPointsOfInterest = await fetch("/api/get-points-of-interest", {
         method: "POST",
         body: JSON.stringify({
-          pointsOfInterestPrompt: json.pointsOfInterestPrompt,
+          pointsOfInterestPrompt: itineraryJSON.pointsOfInterestPrompt,
           block: isUserConnectedFromIndia(),
         }),
       });
-      const json2 = await response2.json();
 
-      let pointsOfInterest = JSON.parse(json2.pointsOfInterest);
-      let itinerary = json.itinerary;
+      const pointsOfInterestJSON = await getPointsOfInterest.json();
+
+      let pointsOfInterest = JSON.parse(pointsOfInterestJSON.pointsOfInterest);
+
+      const productsArray = itineraryJSON.products.products;
 
       pointsOfInterest.map((point) => {
+        const lowercasePoint = point.toLowerCase();
+        console.log(lowercasePoint);
+        console.log("inside points of array map");
+        console.log(productsArray);
+
+        //ON PAGE, need to compare each product(attraction) in products array, to the name of the point (point of interest) and return the PRODUCT URL (attached to product object) that has a PARTIAL match.
+        // OTHERWISE return the search result.
+
+        // function matches(text, point) {
+        //   return text.toLowerCase().indexOf(point.toLowerCase()) > -1;
+        // }
+
+        // function matchesCase(text, partial) {
+        //   return text.indexOf(partial) > -1;
+        // }
+
+        // productsArray.find((product) => product.title.includes(lowercasePoint));
+
+        //for each point, we want to see if a product title has that name matching.
+
         itinerary = itinerary.replace(
           point,
           `[${point}](https://www.viator.com/searchResults/all?pid=P00089289&mcid=42383&medium=link&text=${encodeURIComponent(
@@ -144,6 +181,8 @@ export default function Home() {
           )})`
         );
       });
+
+      console.log({ itinerary });
 
       setItinerary(itinerary);
       if (currentCity.current === request.city) {
