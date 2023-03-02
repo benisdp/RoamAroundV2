@@ -87,9 +87,6 @@ export default function Home() {
       )
         return;
       
-        window.open(
-         AFFILIATE_URL
-        );
 
       //setMessage('Hi! We hit our limits at the moment. Please come back tomorrow!')
       currentCity.current = request.city;
