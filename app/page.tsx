@@ -162,18 +162,6 @@ export default function Home() {
         //ON PAGE, need to compare each product(attraction) in products array, to the name of the point (point of interest) and return the PRODUCT URL (attached to product object) that has a PARTIAL match.
         // OTHERWISE return the search result.s
 
-        // function matches(text, point) {
-        //   return text.toLowerCase().indexOf(point.toLowerCase()) > -1;
-        // }
-
-        // function matchesCase(text, partial) {
-        //   return text.indexOf(partial) > -1;
-        // }
-
-        // productsArray.find((product) => product.title.includes(lowercasePoint));
-
-        //for each point, we want to see if a product title has that name matching.
-
         itinerary = itinerary.replace(
           point,
           `[${point}](https://www.viator.com/searchResults/all?pid=P00089289&mcid=42383&medium=link&text=${encodeURIComponent(
