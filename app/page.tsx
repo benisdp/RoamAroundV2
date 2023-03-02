@@ -22,25 +22,12 @@ export default function Home() {
   let [itinerary, setItinerary] = useState<string>('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
-  const [blockCountry, setBlockCountry] = useState<string>('');
   const currentCity = useRef<string>('');
 
   useEffect(() => {
     checkRedirect();
   }, []);
 
-  const getIP = async () => {
-    const response = await fetch('http://ip-api.com/json/');
-    const data = await response.json();
-    setBlockCountry(data.countryCode);
-  };
-  const isUserConnectedFromIndia = () => {
-    return blockCountry.toLowerCase() == "in";
-  };
-
-  useEffect(() => {
-    getIP();
-  }, []);
 
   useEffect(() => {
     if (request.daysNum && request.daysNum > 10) {
@@ -61,7 +48,7 @@ export default function Home() {
       request.startDate &&
       request.daysNum <= 10
     ) {
-      if (isUserConnectedFromIndia() || currentCity.current === request.city) {
+      if (currentCity.current === request.city) {
         setDisableButton(true);
       } else {
         setDisableButton(false);
@@ -72,7 +59,6 @@ export default function Home() {
       request.daysNum == 0 ||
       request.startDate == '' ||
       (request.daysNum && request.daysNum > 10) ||
-      isUserConnectedFromIndia() ||
       currentCity.current === request.city
     ) {
       setDisableButton(true);
@@ -126,7 +112,6 @@ export default function Home() {
           days: request.daysNum,
           city: request.city,
           startDate: request.startDate,
-          block: isUserConnectedFromIndia(),
         }),
       });
       const json = await response.json();
@@ -135,7 +120,6 @@ export default function Home() {
         method: 'POST',
         body: JSON.stringify({
           pointsOfInterestPrompt: json.pointsOfInterestPrompt,
-          block: isUserConnectedFromIndia(),
         }),
       });
       const json2 = await response2.json();
