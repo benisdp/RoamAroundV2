@@ -252,7 +252,7 @@ export default function Home() {
           {loading && <p>{message}</p>}
           {itinerary && (
             <h3 style={styles.cityHeadingStyle}>
-              Ok, we've made your itinerary for {checkCity(request.city)}
+              Ok, I've made you an amazing itinerary for {checkCity(request.city)}
             </h3>
           )}
           {itinerary &&
