@@ -36,7 +36,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
   if (days > 10) {
     days = 10
   }
-  let basePrompt = `You are a travel guide that knows everything about ${city}. I am a tourist who has never visited ${city}. What is an ideal itinerary for ${days} days starting on ${startDate} in ${city} that includes all the city's main attractions, some historic and some adventerous? Break out your receommendation for each day into morning, afternoon and evening activities and recommend top rated restaurants. Always keep itineraries to under 500 words.`
+  let basePrompt = `You are a travel guide that knows everything about ${city}. I am a tourist who has never visited ${city}. What is an ideal itinerary for ${days} days starting on ${startDate} in ${city} that includes all the city's main attractions, some historic and some adventerous? Break out your receommendation for each day into morning, afternoon and evening activities and recommend specific top rated restaurants. You must keep itineraries to under 500 words.`
   try {
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -44,8 +44,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
       body: JSON.stringify({
         model: 'gpt-3.5-turbo',
         messages: [{ role: 'user', content: basePrompt }],
-        temperature: 0,
-        max_tokens: 550,
+        temperature: 0.8,
+        max_tokens: 1024,
       }),
     })
     const itinerary = await response.json()
