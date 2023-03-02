@@ -133,11 +133,11 @@ export default function Home() {
         }),
       });
 
-      console.log({ getItinerary });
+      // console.log({ getItinerary });
 
       const itineraryJSON = await getItinerary.json();
 
-      console.log({ itineraryJSON });
+      // console.log({ itineraryJSON });
 
       const getPointsOfInterest = await fetch("/api/get-points-of-interest", {
         method: "POST",
@@ -149,25 +149,46 @@ export default function Home() {
 
       const pointsOfInterestJSON = await getPointsOfInterest.json();
 
+      // console.log({ itineraryJSON });
+
       let pointsOfInterest = JSON.parse(pointsOfInterestJSON.pointsOfInterest);
+      let itinerary = itineraryJSON.itinerary;
+      console.log({ pointsOfInterest });
 
       const productsArray = itineraryJSON.products.products;
 
-      pointsOfInterest.map((point) => {
+      await pointsOfInterest.map((point) => {
         const lowercasePoint = point.toLowerCase();
         console.log(lowercasePoint);
         console.log("inside points of array map");
-        console.log(productsArray);
+        console.log({ productsArray });
 
         //ON PAGE, need to compare each product(attraction) in products array, to the name of the point (point of interest) and return the PRODUCT URL (attached to product object) that has a PARTIAL match.
         // OTHERWISE return the search result.s
 
-        itinerary = itinerary.replace(
-          point,
-          `[${point}](https://www.viator.com/searchResults/all?pid=P00089289&mcid=42383&medium=link&text=${encodeURIComponent(
-            point + " " + request.city
-          )})`
+        const foundProduct = productsArray.find(
+          (product) =>
+            product.title.toLowerCase() ||
+            product.description.toLowerCase() === lowercasePoint
         );
+
+        if (foundProduct) {
+          console.log(point, foundProduct.productUrl);
+          itinerary = itinerary.replace(
+            point,
+            `[${point}](${foundProduct.productUrl})`
+          );
+          // console.log(productsArray);
+          // console.log("found a match!");
+        } else {
+          itinerary = itinerary.replace(
+            point,
+            `[${point}](https://www.viator.com/searchResults/all?pid=P00089289&mcid=42383&medium=link&text=${encodeURIComponent(
+              point + " " + request.city
+            )})`
+          );
+          console.log("make a search url"); 
+        }
       });
 
       console.log({ itinerary });
@@ -202,7 +223,6 @@ export default function Home() {
   } else {
     days[0] = "1" + days[0];
   }
-
   return (
     <main>
       <div className="app-container">
